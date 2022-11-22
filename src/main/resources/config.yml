@@ -1,0 +1,45 @@
+#
+# ==== General info ====
+#
+# * After editing of this file you need to check server logs to be
+# sure that no errors was appeared.
+#
+
+#
+# Show debug info. Possible values: true | false (default = false)
+#
+# This option can affect the performance.
+#
+debug: true
+
+#
+# Enable main features. Possible values: true | false (default = false)
+#
+enabled: true
+
+#
+# List of max health multipliers for sequential deaths.
+#
+# The 1.0 multiplier means the player max health won't be changed.
+#
+# Each multiplier has to be a float value starting at least of 0.0001.
+#
+
+levels:
+  - 1.0
+  - 0.8
+  - 0.65
+  - 0.55
+  - 0.45
+  - 0.35
+  - 0.3
+  - 0.25
+  - 0.2
+  - 0.15
+  - 0.1
+  - 0.05
+
+#
+# Time required for a player to be alive to recover to the previous level, in seconds.
+#
+interval: 10

@@ -1,0 +1,20 @@
+name: RespawnLimiter
+main: com.gmail.uprial.respawnlimiter.RespawnLimiter
+version: 0.1.0
+# api-version: 1.10
+commands:
+  respawnlimiter:
+      description: Reload RespawnLimiter config
+      usage: /respawnlimiter help
+      permission:
+      permission-message:
+permissions:
+  respawnlimiter.reload:
+    description: Gives access to RespawnLimiter 'reload' command
+    default: op
+  respawnlimiter.info:
+    description: Gives access to RespawnLimiter 'info [@player]' command
+    default: op
+  respawnlimiter.reset:
+    description: Gives access to RespawnLimiter 'reset [@player]' command
+    default: op
