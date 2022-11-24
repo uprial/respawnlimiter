@@ -1,5 +1,7 @@
 package com.gmail.uprial.respawnlimiter;
 
+import com.gmail.uprial.respawnlimiter.limiter.PlayerLimiter;
+import com.gmail.uprial.respawnlimiter.limiter.PlayerStats;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +38,7 @@ class RespawnLimiterCommandExecutor implements CommandExecutor {
                         customLogger.error(String.format("Player '%s' is not exists.", playerName));
                         return false;
                     } else {
-                        customLogger.info(plugin.getPlayerStatistics(player));
+                        customLogger.info(new PlayerStats(plugin, player).toString());
                         return true;
                     }
                 }
@@ -49,8 +51,8 @@ class RespawnLimiterCommandExecutor implements CommandExecutor {
                         customLogger.error(String.format("Player '%s' is not exists.", playerName));
                         return false;
                     } else {
-                        plugin.resetPlayerStatistics(player);
-                        customLogger.info(plugin.getPlayerStatistics(player));
+                        new PlayerLimiter(plugin, customLogger).resetPlayerDeathsStats(player);
+                        customLogger.info(new PlayerStats(plugin, player).toString());
                         return true;
                     }
                 }

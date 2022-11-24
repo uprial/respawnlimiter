@@ -22,7 +22,6 @@ public final class RespawnLimiter extends JavaPlugin {
 
     private CustomLogger consoleLogger = null;
     private RespawnLimiterConfig respawnLimiterConfig = null;
-    private PlayerLimiter playerLimiter = null;
 
     @Override
     public void onEnable() {
@@ -30,32 +29,11 @@ public final class RespawnLimiter extends JavaPlugin {
 
         consoleLogger = new CustomLogger(getLogger());
         respawnLimiterConfig = loadConfig(getConfig(), consoleLogger);
-        playerLimiter = new PlayerLimiter(this, consoleLogger);
 
-        getServer().getPluginManager().registerEvents(new RespawnLimiterEventListener(this), this);
+        getServer().getPluginManager().registerEvents(new RespawnLimiterEventListener(this, consoleLogger), this);
 
         getCommand(COMMAND_NS).setExecutor(new RespawnLimiterCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
-    }
-
-    public void onPlayerRespawn(final Player player) {
-        if(respawnLimiterConfig.isEnabled()) {
-            playerLimiter.onPlayerRespawn(player);
-        }
-    }
-
-    public void onPlayerStatisticsUpdate(final Player player) {
-        if(respawnLimiterConfig.isEnabled()) {
-            playerLimiter.onPlayerStatisticsUpdate(player);
-        }
-    }
-
-    public String getPlayerStatistics(final Player player) {
-        return playerLimiter.getPlayerStatistics(player);
-    }
-
-    public void resetPlayerStatistics(final Player player) {
-        playerLimiter.resetPlayerStatistics(player);
     }
 
     public RespawnLimiterConfig getRespawnLimiterConfig() {
