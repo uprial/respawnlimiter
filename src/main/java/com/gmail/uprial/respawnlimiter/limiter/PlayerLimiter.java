@@ -75,7 +75,7 @@ public class PlayerLimiter {
         updatePlayerMaxHealth(player, 0);
     }
 
-    private void updatePlayerMaxHealth(final Player player, int sequentialDeaths) {
+    private void updatePlayerMaxHealth(final Player player, final int sequentialDeaths) {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
 
         final double newMaxHealthMultiplier = plugin.getRespawnLimiterConfig().getMaxHealthMultiplier(sequentialDeaths);
@@ -87,15 +87,28 @@ public class PlayerLimiter {
             final double oldMaxHealth = maxHealthAttributeInstance.getBaseValue();
             final double newMaxHealth = oldMaxHealth / oldMaxHealthMultiplier * newMaxHealthMultiplier;
 
+            /*
+                WARNING: the following two lines must have nothing in between,
+                or any exception will prevent stats from the save
+                and break the future control of max health.
+             */
             maxHealthAttributeInstance.setBaseValue(newMaxHealth);
-            player.setHealth(newMaxHealth - HEALTH_REDUCTION);
+            playerStats.setMaxHealthMultiplier(newMaxHealthMultiplier);
+
+            if(newMaxHealthMultiplier < oldMaxHealthMultiplier) {
+                player.setHealth(newMaxHealth - HEALTH_REDUCTION);
+            }
 
             if(customLogger.isDebugMode()) {
                 customLogger.debug(String.format("Changed max. health of %s from %.2f to %.2f",
                         format(player), oldMaxHealth, newMaxHealth));
             }
-
-            playerStats.setMaxHealthMultiplier(newMaxHealthMultiplier);
+            new CustomLogger(plugin.getLogger(), player).info(
+                    String.format("You have %d/%d sequential deaths," +
+                                    " your max health modifier changed to %d%%",
+                            sequentialDeaths,
+                            plugin.getRespawnLimiterConfig().getMaxSequentialDeaths(),
+                            Math.round(newMaxHealthMultiplier * 100)));
         }
     }
 
