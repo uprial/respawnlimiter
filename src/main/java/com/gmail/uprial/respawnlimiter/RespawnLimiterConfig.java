@@ -9,7 +9,6 @@ import java.util.*;
 
 import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MAX_DOUBLE_VALUE;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.checkDoubleValue;
-import static java.lang.Math.min;
 
 public final class RespawnLimiterConfig {
     private final boolean enabled;
@@ -29,7 +28,11 @@ public final class RespawnLimiterConfig {
     }
 
     public double getMaxHealthMultiplier(int sequentialDeaths) {
-        return levels.get(min(sequentialDeaths, levels.size()));
+        return levels.get(sequentialDeaths);
+    }
+
+    public int getMaxSequentialDeaths() {
+        return levels.size() - 1;
     }
 
     public static RespawnLimiterConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {

@@ -28,7 +28,9 @@ public class PlayerLimiter {
 
     public void registerPlayerDeath(final Player player) {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
-        final int sequentialDeaths =  getOrDefault(playerStats.getSequentialDeaths(), 0) + 1;
+        final int sequentialDeaths =
+                Math.min(getOrDefault(playerStats.getSequentialDeaths(), 0) + 1,
+                        plugin.getRespawnLimiterConfig().getMaxSequentialDeaths());
 
         // Update
         updatePlayerMaxHealth(player, sequentialDeaths);
