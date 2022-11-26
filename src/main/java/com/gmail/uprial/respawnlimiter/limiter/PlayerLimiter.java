@@ -71,6 +71,8 @@ public class PlayerLimiter {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
         playerStats.setSequentialDeaths(0);
         playerStats.setTimeSinceDeathUsed(0);
+        // Update
+        updatePlayerMaxHealth(player, 0);
     }
 
     private void updatePlayerMaxHealth(final Player player, int sequentialDeaths) {
