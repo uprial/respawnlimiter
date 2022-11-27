@@ -12,7 +12,7 @@ A Minecraft (Bukkit) plugin that limits gameplay strategies based on easy player
 
 * Each time a player dies, their max health is scaled down sequentially to a half heart. 
 * The player can recover from the last scale-down via 1 day of surviving or 10y mob kills.
-* The survival period and number of mob kills can be configured.
+* The survival period and the number of mob kills can be configured.
 
 ## Commands
 
@@ -42,7 +42,7 @@ I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 ## Useful links
 * [Project on GitHub](https://github.com/uprial/respawnlimiter/)
 * [Project on Bukkit Dev](TBD)
-* [Project on Spigot](TBD)
+* [Project on Spigot](https://www.spigotmc.org/resources/respawnlimiter.106469/)
 
 ## Related projects
 * CustomNukes: [Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/customnukes/), [GitHub](https://github.com/uprial/customnukes), [Spigot](https://www.spigotmc.org/resources/customnukes.68710/)
