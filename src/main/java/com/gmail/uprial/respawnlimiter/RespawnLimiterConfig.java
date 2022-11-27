@@ -3,20 +3,32 @@ package com.gmail.uprial.respawnlimiter;
 import com.gmail.uprial.respawnlimiter.common.CustomLogger;
 import com.gmail.uprial.respawnlimiter.config.ConfigReaderSimple;
 import com.gmail.uprial.respawnlimiter.config.InvalidConfigException;
+import com.gmail.uprial.respawnlimiter.limiter.RecoveryInterval;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
 
 import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MAX_DOUBLE_VALUE;
+import static com.gmail.uprial.respawnlimiter.common.Utils.days2ticks;
+import static com.gmail.uprial.respawnlimiter.config.ConfigReaderEnums.getEnum;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.checkDoubleValue;
 
 public final class RespawnLimiterConfig {
     private final boolean enabled;
     private final List<Double> levels;
+    private final RecoveryInterval recoveryInterval;
 
-    private RespawnLimiterConfig(boolean enabled, List<Double> levels) {
+    private static final Map<RecoveryInterval, Integer> RECOVERY_INTERVAL_2_TICKS = ImmutableMap.<RecoveryInterval, Integer>builder()
+            .put(RecoveryInterval.HOUR, days2ticks(1) / 24)
+            .put(RecoveryInterval.DAY, days2ticks(1))
+            .put(RecoveryInterval.WEEK, days2ticks(7))
+            .build();
+
+    private RespawnLimiterConfig(final boolean enabled, final List<Double> levels, final RecoveryInterval recoveryInterval) {
         this.enabled = enabled;
         this.levels = levels;
+        this.recoveryInterval = recoveryInterval;
     }
 
     static boolean isDebugMode(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
@@ -35,17 +47,25 @@ public final class RespawnLimiterConfig {
         return levels.size() - 1;
     }
 
+    public int getRecoveryInterval() {
+        return RECOVERY_INTERVAL_2_TICKS.get(recoveryInterval);
+    }
+
+    public String getRecoveryIntervalName() {
+        return recoveryInterval.toString();
+    }
+
     public static RespawnLimiterConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
         final boolean enabled = ConfigReaderSimple.getBoolean(config, customLogger, "enabled", "'enabled' flag", true);
 
-        List<?> handlersConfig = config.getList("levels");
+        final List<?> handlersConfig = config.getList("levels");
         if((handlersConfig == null) || (handlersConfig.size() <= 0)) {
             throw new InvalidConfigException("Empty 'levels' list");
         }
 
-        List<Double> levels = new ArrayList<>();
+        final List<Double> levels = new ArrayList<>();
 
-        int levelsConfigSize = handlersConfig.size();
+        final int levelsConfigSize = handlersConfig.size();
         for(int i = 0; i < levelsConfigSize; i++) {
             try {
                 Object item = handlersConfig.get(i);
@@ -67,10 +87,14 @@ public final class RespawnLimiterConfig {
             throw new InvalidConfigException("There are no valid levels definitions");
         }
 
-        return new RespawnLimiterConfig(enabled, levels);
+        final RecoveryInterval recoveryInterval = getEnum(RecoveryInterval.class, config,
+                "recovery-interval", "recovery interval");
+
+        return new RespawnLimiterConfig(enabled, levels, recoveryInterval);
     }
 
     public String toString() {
-        return String.format("enabled: %b, levels: %s", enabled, levels);
+        return String.format("enabled: %b, levels: %s, recovery-interval: %s",
+                enabled, levels, recoveryInterval);
     }
 }

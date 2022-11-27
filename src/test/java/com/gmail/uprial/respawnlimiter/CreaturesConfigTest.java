@@ -62,13 +62,31 @@ public class CreaturesConfigTest extends TestConfigBase {
                         "levels:",
                         "- -99");
     }
+    @Test
+    public void testNullRecoveryInterval() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Null recovery interval");
+        loadConfig(getIndifferentCustomLogger(), "enabled: true",
+                "levels:",
+                "- 99");
+    }
 
+    @Test
+    public void testInvalidRecoveryInterval() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Invalid com.gmail.uprial.respawnlimiter.limiter.RecoveryInterval '10' in recovery interval");
+        loadConfig(getIndifferentCustomLogger(), "enabled: true",
+                "levels:",
+                "- 99",
+                "recovery-interval: 10");
+    }
     @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
-                "enabled: true, levels: [100.0]",
+                "enabled: true, levels: [100.0], recovery-interval: day",
                 loadConfig("enabled: true",
                         "levels:",
-                        " - 100").toString());
+                        " - 100",
+                        "recovery-interval: day").toString());
     }
 }

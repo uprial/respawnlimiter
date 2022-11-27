@@ -35,6 +35,8 @@ levels:
   - 0.05
 
 #
-# Time required for a player to be alive to recover to the previous level, in seconds.
+# Time required for a player to be alive to recover to the previous level, in game time.
 #
-interval: 10
+# Possible values: hour | day | week
+#
+recovery-interval: day

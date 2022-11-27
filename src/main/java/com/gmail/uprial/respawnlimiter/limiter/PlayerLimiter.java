@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MIN_DOUBLE_VALUE;
 import static com.gmail.uprial.respawnlimiter.common.Formatter.format;
-import static com.gmail.uprial.respawnlimiter.common.Utils.seconds2ticks;
 
 public class PlayerLimiter {
     /*
@@ -44,7 +43,7 @@ public class PlayerLimiter {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
         int sequentialDeaths = getOrDefault(playerStats.getSequentialDeaths(), 0);
         if(sequentialDeaths > 0) {
-            final int period = seconds2ticks(60);
+            final int period = plugin.getRespawnLimiterConfig().getRecoveryInterval();
             int timeSinceDeath = playerStats.getTimeSinceDeath();
             int timeSinceDeathUsed = getOrDefault(playerStats.getTimeSinceDeathUsed(), 0);
 
@@ -105,10 +104,11 @@ public class PlayerLimiter {
             }
             new CustomLogger(plugin.getLogger(), player).info(
                     String.format("You have %d/%d sequential deaths," +
-                                    " your max health modifier changed to %d%%",
+                                    " which scaled your maximum health to %d%% for one %s",
                             sequentialDeaths,
                             plugin.getRespawnLimiterConfig().getMaxSequentialDeaths(),
-                            Math.round(newMaxHealthMultiplier * 100)));
+                            Math.round(newMaxHealthMultiplier * 100),
+                            plugin.getRespawnLimiterConfig().getRecoveryIntervalName()));
         }
     }
 

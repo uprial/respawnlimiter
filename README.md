@@ -10,8 +10,8 @@ A Minecraft (Bukkit) plugin that limits gameplay strategies based on easy player
 
 ## Features
 
-* Each time a player dies, their max health is reduced sequentially down to a half heart.
-* After surviving for 1 full game day without deaths,  the player recovers the max health to its level before the previous death, sequentially to the initial max health.
+* Each time a player dies, their max health is scaled down sequentially to a half heart.
+* After surviving for 1 full game day (configurable) without deaths, the player recovers the max health to its level before the previous death.
 
 ## Commands
 

@@ -6,8 +6,14 @@ public class Utils {
     // A number of server ticks in one second
     public static final int SERVER_TICKS_IN_SECOND = 20;
 
+    public static final int SECONDS_IN_DAY = 10 * 60;
+
     public static int seconds2ticks(int seconds) {
         return seconds * SERVER_TICKS_IN_SECOND;
+    }
+
+    public static int days2ticks(int days) {
+        return seconds2ticks(SECONDS_IN_DAY);
     }
 
     public static <T> String joinStrings(String delimiter, List<T> contents) {
