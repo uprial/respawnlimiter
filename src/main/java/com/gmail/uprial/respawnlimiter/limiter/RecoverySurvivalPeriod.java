@@ -1,6 +1,6 @@
 package com.gmail.uprial.respawnlimiter.limiter;
 
-public enum RecoveryInterval {
+public enum RecoverySurvivalPeriod {
     HOUR,
     DAY,
     WEEK;

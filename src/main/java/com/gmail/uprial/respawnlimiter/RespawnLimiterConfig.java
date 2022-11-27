@@ -3,7 +3,7 @@ package com.gmail.uprial.respawnlimiter;
 import com.gmail.uprial.respawnlimiter.common.CustomLogger;
 import com.gmail.uprial.respawnlimiter.config.ConfigReaderSimple;
 import com.gmail.uprial.respawnlimiter.config.InvalidConfigException;
-import com.gmail.uprial.respawnlimiter.limiter.RecoveryInterval;
+import com.gmail.uprial.respawnlimiter.limiter.RecoverySurvivalPeriod;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -13,22 +13,27 @@ import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MAX_DOUBLE_VAL
 import static com.gmail.uprial.respawnlimiter.common.Utils.days2ticks;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderEnums.getEnum;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.checkDoubleValue;
+import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.getInt;
 
 public final class RespawnLimiterConfig {
     private final boolean enabled;
     private final List<Double> levels;
-    private final RecoveryInterval recoveryInterval;
+    private final RecoverySurvivalPeriod recoverySurvivalPeriod;
+    private final Integer recoveryMobKills;
 
-    private static final Map<RecoveryInterval, Integer> RECOVERY_INTERVAL_2_TICKS = ImmutableMap.<RecoveryInterval, Integer>builder()
-            .put(RecoveryInterval.HOUR, days2ticks(1) / 24)
-            .put(RecoveryInterval.DAY, days2ticks(1))
-            .put(RecoveryInterval.WEEK, days2ticks(7))
+    private static final Map<RecoverySurvivalPeriod, Integer> RECOVERY_SURVIVAL_PERIOD_2_TICKS = ImmutableMap.<RecoverySurvivalPeriod, Integer>builder()
+            .put(RecoverySurvivalPeriod.HOUR, days2ticks(1) / 24)
+            .put(RecoverySurvivalPeriod.DAY, days2ticks(1))
+            .put(RecoverySurvivalPeriod.WEEK, days2ticks(7))
             .build();
 
-    private RespawnLimiterConfig(final boolean enabled, final List<Double> levels, final RecoveryInterval recoveryInterval) {
+    private RespawnLimiterConfig(final boolean enabled, final List<Double> levels,
+                                 final RecoverySurvivalPeriod recoverySurvivalPeriod,
+                                 final Integer recoveryMobKills) {
         this.enabled = enabled;
         this.levels = levels;
-        this.recoveryInterval = recoveryInterval;
+        this.recoverySurvivalPeriod = recoverySurvivalPeriod;
+        this.recoveryMobKills = recoveryMobKills;
     }
 
     static boolean isDebugMode(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
@@ -47,12 +52,16 @@ public final class RespawnLimiterConfig {
         return levels.size() - 1;
     }
 
-    public int getRecoveryInterval() {
-        return RECOVERY_INTERVAL_2_TICKS.get(recoveryInterval);
+    public int getRecoverySurvivalPeriod() {
+        return RECOVERY_SURVIVAL_PERIOD_2_TICKS.get(recoverySurvivalPeriod);
     }
 
-    public String getRecoveryIntervalName() {
-        return recoveryInterval.toString();
+    public String getRecoverySurvivalPeriodName() {
+        return recoverySurvivalPeriod.toString();
+    }
+
+    public int getRecoveryMobKills() {
+        return recoveryMobKills;
     }
 
     public static RespawnLimiterConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
@@ -87,14 +96,17 @@ public final class RespawnLimiterConfig {
             throw new InvalidConfigException("There are no valid levels definitions");
         }
 
-        final RecoveryInterval recoveryInterval = getEnum(RecoveryInterval.class, config,
-                "recovery-interval", "recovery interval");
+        final RecoverySurvivalPeriod recoverySurvivalPeriod = getEnum(RecoverySurvivalPeriod.class, config,
+                "recovery-survival-period", "recovery survival period");
 
-        return new RespawnLimiterConfig(enabled, levels, recoveryInterval);
+        final Integer recoveryMobKills = getInt(config, customLogger,
+                "recovery-mob-kills", "recovery mob kills", 1, Integer.MAX_VALUE);
+
+        return new RespawnLimiterConfig(enabled, levels, recoverySurvivalPeriod, recoveryMobKills);
     }
 
     public String toString() {
-        return String.format("enabled: %b, levels: %s, recovery-interval: %s",
-                enabled, levels, recoveryInterval);
+        return String.format("enabled: %b, levels: %s, recovery-survival-period: %s, recovery-mob-kills: %d",
+                enabled, levels, recoverySurvivalPeriod, recoveryMobKills);
     }
 }

@@ -22,7 +22,7 @@ enabled: true
 #
 # The 1.0 multiplier means the player max health won't be changed.
 #
-# Each multiplier has to be a float value starting at least of 0.0001.
+# Each multiplier has to be a float value starting from 0.0001.
 #
 
 levels:
@@ -39,4 +39,11 @@ levels:
 #
 # Possible values: hour | day | week
 #
-recovery-interval: day
+recovery-survival-period: day
+
+#
+# Kill required for a player to recover to the previous level.
+#
+# Value has to be a integer value starting from 1.
+#
+recovery-mob-kills: 10

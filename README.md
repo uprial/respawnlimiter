@@ -10,13 +10,16 @@ A Minecraft (Bukkit) plugin that limits gameplay strategies based on easy player
 
 ## Features
 
-* Each time a player dies, their max health is scaled down sequentially to a half heart.
-* After surviving for 1 full game day (configurable) without deaths, the player recovers the max health to its level before the previous death.
+* Each time a player dies, their max health is scaled down sequentially to a half heart. 
+* The player can recover from the last scale-down via 1 day of surviving or 10y mob kills.
+* The survival period and number of mob kills can be configured.
 
 ## Commands
 
 `respawnlimiter reload` - reload config from disk
+
 `respawnlimiter info [@player]` - show player limits
+
 `respawnlimiter reset [@player]` - reset player limits
 
 ## Permissions

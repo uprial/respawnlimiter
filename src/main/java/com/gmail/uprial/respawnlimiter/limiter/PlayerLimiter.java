@@ -6,6 +6,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MIN_DOUBLE_VALUE;
 import static com.gmail.uprial.respawnlimiter.common.Formatter.format;
 
@@ -31,37 +36,42 @@ public class PlayerLimiter {
                 Math.min(getOrDefault(playerStats.getSequentialDeaths(), 0) + 1,
                         plugin.getRespawnLimiterConfig().getMaxSequentialDeaths());
 
-        // Update
-        updatePlayerMaxHealth(player, sequentialDeaths);
-
         // Waste all the time since death
         playerStats.setSequentialDeaths(sequentialDeaths);
-        playerStats.setTimeSinceDeathUsed(0);
+        playerStats.setTimeSinceDeathUsed(playerStats.getTimeSinceDeath());
+        playerStats.setMobKillsUsed(playerStats.getMobKills());
+
+        // Update
+        updatePlayerMaxHealth(player, sequentialDeaths);
     }
 
     public void updatePlayerDeathsStats(final Player player) {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
         int sequentialDeaths = getOrDefault(playerStats.getSequentialDeaths(), 0);
         if(sequentialDeaths > 0) {
-            final int period = plugin.getRespawnLimiterConfig().getRecoveryInterval();
-            int timeSinceDeath = playerStats.getTimeSinceDeath();
-            int timeSinceDeathUsed = getOrDefault(playerStats.getTimeSinceDeathUsed(), 0);
+            final AtomicBoolean toUpdatePlayerMaxHealth = new AtomicBoolean(false);
 
-            timeSinceDeath -= timeSinceDeathUsed;
+            sequentialDeaths = recover(sequentialDeaths,
+                    playerStats.getTimeSinceDeath(),
+                    getOrDefault(playerStats.getTimeSinceDeathUsed(), 0),
+                    plugin.getRespawnLimiterConfig().getRecoverySurvivalPeriod(),
+                    (used) -> {
+                        playerStats.setTimeSinceDeathUsed(used);
+                        toUpdatePlayerMaxHealth.set(true);
+                    });
 
-            if(timeSinceDeath > period) {
-                while ((timeSinceDeath > period) && (sequentialDeaths > 0)) {
-                    timeSinceDeath -= period;
-                    timeSinceDeathUsed += period;
-                    sequentialDeaths -= 1;
-                }
+            sequentialDeaths = recover(sequentialDeaths,
+                    playerStats.getMobKills(),
+                    getOrDefault(playerStats.getMobKillsUsed(), 0),
+                    plugin.getRespawnLimiterConfig().getRecoveryMobKills(),
+                    (used) -> {
+                        playerStats.setMobKillsUsed(used);
+                        toUpdatePlayerMaxHealth.set(true);
+                    });
 
-                // Update
-                updatePlayerMaxHealth(player, sequentialDeaths);
-
-                // Save stats
+            if(toUpdatePlayerMaxHealth.get()) {
                 playerStats.setSequentialDeaths(sequentialDeaths);
-                playerStats.setTimeSinceDeathUsed(timeSinceDeathUsed);
+                updatePlayerMaxHealth(player, sequentialDeaths);
             }
         }
     }
@@ -69,9 +79,26 @@ public class PlayerLimiter {
     public void resetPlayerDeathsStats(final Player player) {
         final PlayerStats playerStats = new PlayerStats(plugin, player);
         playerStats.setSequentialDeaths(0);
-        playerStats.setTimeSinceDeathUsed(0);
+        playerStats.setTimeSinceDeathUsed(playerStats.getTimeSinceDeath());
+        playerStats.setMobKillsUsed(playerStats.getMobKillsUsed());
         // Update
         updatePlayerMaxHealth(player, 0);
+    }
+
+    private int recover(int sequentialDeaths, int current, int used, final int step, Consumer<Integer> decreaser) {
+        current -= used;
+
+        if (current > step) {
+            while ((current > step) && (sequentialDeaths > 0)) {
+                current -= step;
+                used += step;
+                sequentialDeaths -= 1;
+            }
+
+            decreaser.accept(used);
+        }
+
+        return sequentialDeaths;
     }
 
     private void updatePlayerMaxHealth(final Player player, final int sequentialDeaths) {
@@ -102,13 +129,17 @@ public class PlayerLimiter {
                 customLogger.debug(String.format("Changed max. health of %s from %.2f to %.2f",
                         format(player), oldMaxHealth, newMaxHealth));
             }
+
             new CustomLogger(plugin.getLogger(), player).info(
-                    String.format("You have %d/%d sequential deaths," +
-                                    " which scaled your maximum health to %d%% for one %s",
-                            sequentialDeaths,
-                            plugin.getRespawnLimiterConfig().getMaxSequentialDeaths(),
+                    String.format("Your max health scaled to %d%% due to %d sequential deaths",
                             Math.round(newMaxHealthMultiplier * 100),
-                            plugin.getRespawnLimiterConfig().getRecoveryIntervalName()));
+                            sequentialDeaths)
+                    + (sequentialDeaths > 0 ?
+                            String.format(", survive for 1 %s or kill %d mobs to scale it up",
+                                    plugin.getRespawnLimiterConfig().getRecoverySurvivalPeriodName(),
+                                    plugin.getRespawnLimiterConfig().getRecoveryMobKills())
+                            : "")
+            );
         }
     }
 
