@@ -42,7 +42,7 @@ levels:
 recovery-survival-period: day
 
 #
-# Kill required for a player to recover to the previous level.
+# Kills required for a player to recover to the previous level.
 #
 # Value has to be a integer value starting from 1.
 #

@@ -11,7 +11,7 @@ A Minecraft (Bukkit) plugin that limits gameplay strategies based on easy player
 ## Features
 
 * Each time a player dies, their max health is scaled down sequentially to a half heart. 
-* The player can recover from the last scale-down via 1 day of surviving or 10y mob kills.
+* The player can recover from the last scale-down via 1 day of surviving or 10 mob kills.
 * The survival period and the number of mob kills can be configured.
 
 ## Commands
