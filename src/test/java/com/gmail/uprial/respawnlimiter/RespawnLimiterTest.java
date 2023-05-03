@@ -5,7 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class CustomCreaturesTest extends TestConfigBase {
+public class RespawnLimiterTest extends TestConfigBase {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 

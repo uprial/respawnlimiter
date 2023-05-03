@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class CreaturesConfigTest extends TestConfigBase {
+public class RespawnLimiterConfigTest extends TestConfigBase {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
