@@ -40,10 +40,18 @@ public class RespawnLimiterConfigTest extends TestConfigBase {
     }
 
     @Test
+    public void testEmptyVerbose() throws Exception {
+        e.expect(RuntimeException.class);
+        e.expectMessage("Empty 'verbose' flag. Use default value false");
+        loadConfig(getDebugFearingCustomLogger(), "enabled: true");
+    }
+
+    @Test
     public void testEmptyLevels() throws Exception {
         e.expect(InvalidConfigException.class);
         e.expectMessage("Empty 'levels' list");
-        loadConfig(getDebugFearingCustomLogger(), "enabled: true");
+        loadConfig(getDebugFearingCustomLogger(), "enabled: true",
+                "verbose: false");
     }
 
     @Test
@@ -103,7 +111,7 @@ public class RespawnLimiterConfigTest extends TestConfigBase {
     @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
-                "enabled: true, levels: [100.0], recovery-survival-period: day, recovery-mob-kills: 10",
+                "enabled: true, verbose: false, levels: [100.0], recovery-survival-period: day, recovery-mob-kills: 10",
                 loadConfig("enabled: true",
                         "levels:",
                         " - 100",

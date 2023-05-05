@@ -6,14 +6,23 @@ public class Utils {
     // A number of server ticks in one second
     public static final int SERVER_TICKS_IN_SECOND = 20;
 
-    public static final int SECONDS_IN_DAY = 10 * 60;
+    /*
+        The daylight cycle is a 20-minute-long cycle between two main light settings.
+
+        See also: https://minecraft.fandom.com/wiki/Daylight_cycle
+     */
+    public static final int SECONDS_IN_DAY = 20 * 60;
 
     public static int seconds2ticks(int seconds) {
         return seconds * SERVER_TICKS_IN_SECOND;
     }
 
+    public static int hours2ticks(int hours) {
+        return seconds2ticks(SECONDS_IN_DAY) * hours / 24;
+    }
+
     public static int days2ticks(int days) {
-        return seconds2ticks(SECONDS_IN_DAY);
+        return seconds2ticks(days * SECONDS_IN_DAY);
     }
 
     public static <T> String joinStrings(String delimiter, List<T> contents) {

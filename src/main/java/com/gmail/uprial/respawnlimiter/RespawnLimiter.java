@@ -4,6 +4,7 @@ import com.gmail.uprial.respawnlimiter.common.CustomLogger;
 import com.gmail.uprial.respawnlimiter.config.InvalidConfigException;
 import com.gmail.uprial.respawnlimiter.limiter.PlayerLimiter;
 import com.gmail.uprial.respawnlimiter.listeners.RespawnLimiterEventListener;
+import com.gmail.uprial.respawnlimiter.trackers.PlayerTracker;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -23,12 +24,16 @@ public final class RespawnLimiter extends JavaPlugin {
     private CustomLogger consoleLogger = null;
     private RespawnLimiterConfig respawnLimiterConfig = null;
 
+    private PlayerTracker playerTracker;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
         consoleLogger = new CustomLogger(getLogger());
         respawnLimiterConfig = loadConfig(getConfig(), consoleLogger);
+
+        playerTracker = new PlayerTracker(this, consoleLogger);
 
         getServer().getPluginManager().registerEvents(new RespawnLimiterEventListener(this, consoleLogger), this);
 
@@ -57,11 +62,13 @@ public final class RespawnLimiter extends JavaPlugin {
     void reloadConfig(CustomLogger userLogger) {
         reloadConfig();
         respawnLimiterConfig = loadConfig(getConfig(), userLogger, consoleLogger);
+        playerTracker.onConfigChange();
     }
 
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
+        playerTracker.stop();
         consoleLogger.info("Plugin disabled");
     }
 

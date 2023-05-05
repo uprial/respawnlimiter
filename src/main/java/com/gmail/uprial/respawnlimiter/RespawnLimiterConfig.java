@@ -11,26 +11,31 @@ import java.util.*;
 
 import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MAX_DOUBLE_VALUE;
 import static com.gmail.uprial.respawnlimiter.common.Utils.days2ticks;
+import static com.gmail.uprial.respawnlimiter.common.Utils.hours2ticks;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderEnums.getEnum;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.checkDoubleValue;
 import static com.gmail.uprial.respawnlimiter.config.ConfigReaderNumbers.getInt;
 
 public final class RespawnLimiterConfig {
     private final boolean enabled;
+    private final boolean verbose;
     private final List<Double> levels;
     private final RecoverySurvivalPeriod recoverySurvivalPeriod;
     private final Integer recoveryMobKills;
 
     private static final Map<RecoverySurvivalPeriod, Integer> RECOVERY_SURVIVAL_PERIOD_2_TICKS = ImmutableMap.<RecoverySurvivalPeriod, Integer>builder()
-            .put(RecoverySurvivalPeriod.HOUR, days2ticks(1) / 24)
+            .put(RecoverySurvivalPeriod.HOUR, hours2ticks(1))
             .put(RecoverySurvivalPeriod.DAY, days2ticks(1))
             .put(RecoverySurvivalPeriod.WEEK, days2ticks(7))
             .build();
 
-    private RespawnLimiterConfig(final boolean enabled, final List<Double> levels,
+    private RespawnLimiterConfig(final boolean enabled,
+                                 final boolean verbose,
+                                 final List<Double> levels,
                                  final RecoverySurvivalPeriod recoverySurvivalPeriod,
                                  final Integer recoveryMobKills) {
         this.enabled = enabled;
+        this.verbose = verbose;
         this.levels = levels;
         this.recoverySurvivalPeriod = recoverySurvivalPeriod;
         this.recoveryMobKills = recoveryMobKills;
@@ -40,8 +45,16 @@ public final class RespawnLimiterConfig {
         return ConfigReaderSimple.getBoolean(config, customLogger, "debug", "'debug' flag", false);
     }
 
+    public static int getMinRecoverySurvivalPeriod() {
+        return RECOVERY_SURVIVAL_PERIOD_2_TICKS.get(RecoverySurvivalPeriod.HOUR);
+    }
+
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
     }
 
     public double getMaxHealthMultiplier(int sequentialDeaths) {
@@ -66,6 +79,7 @@ public final class RespawnLimiterConfig {
 
     public static RespawnLimiterConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
         final boolean enabled = ConfigReaderSimple.getBoolean(config, customLogger, "enabled", "'enabled' flag", true);
+        final boolean verbose = ConfigReaderSimple.getBoolean(config, customLogger, "verbose", "'verbose' flag", false);
 
         final List<?> handlersConfig = config.getList("levels");
         if((handlersConfig == null) || (handlersConfig.size() <= 0)) {
@@ -102,11 +116,11 @@ public final class RespawnLimiterConfig {
         final Integer recoveryMobKills = getInt(config, customLogger,
                 "recovery-mob-kills", "recovery mob kills", 1, Integer.MAX_VALUE);
 
-        return new RespawnLimiterConfig(enabled, levels, recoverySurvivalPeriod, recoveryMobKills);
+        return new RespawnLimiterConfig(enabled, verbose, levels, recoverySurvivalPeriod, recoveryMobKills);
     }
 
     public String toString() {
-        return String.format("enabled: %b, levels: %s, recovery-survival-period: %s, recovery-mob-kills: %d",
-                enabled, levels, recoverySurvivalPeriod, recoveryMobKills);
+        return String.format("enabled: %b, verbose: %b, levels: %s, recovery-survival-period: %s, recovery-mob-kills: %d",
+                enabled, verbose, levels, recoverySurvivalPeriod, recoveryMobKills);
     }
 }

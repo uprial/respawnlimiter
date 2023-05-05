@@ -130,16 +130,18 @@ public class PlayerLimiter {
                         format(player), oldMaxHealth, newMaxHealth));
             }
 
-            new CustomLogger(plugin.getLogger(), player).info(
-                    String.format("Your max health scaled to %d%% due to %d sequential deaths",
-                            Math.round(newMaxHealthMultiplier * 100),
-                            sequentialDeaths)
-                    + (sequentialDeaths > 0 ?
-                            String.format(", survive for 1 %s or kill %d mobs to scale it up",
-                                    plugin.getRespawnLimiterConfig().getRecoverySurvivalPeriodName(),
-                                    plugin.getRespawnLimiterConfig().getRecoveryMobKills())
-                            : "")
-            );
+            if(plugin.getRespawnLimiterConfig().isVerbose()) {
+                new CustomLogger(plugin.getLogger(), player).info(
+                        String.format("Your max health scaled to %d%% due to %d sequential deaths",
+                                Math.round(newMaxHealthMultiplier * 100),
+                                sequentialDeaths)
+                                + (sequentialDeaths > 0 ?
+                                String.format(", survive for 1 %s or kill %d mobs to scale it up",
+                                        plugin.getRespawnLimiterConfig().getRecoverySurvivalPeriodName(),
+                                        plugin.getRespawnLimiterConfig().getRecoveryMobKills())
+                                : "")
+                );
+            }
         }
     }
 

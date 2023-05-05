@@ -18,6 +18,11 @@ debug: false
 enabled: true
 
 #
+# Warn player about changes. Possible values: true | false (default = false)
+#
+verbose: false
+
+#
 # List of max health multipliers for sequential deaths.
 #
 # The 1.0 multiplier means the player max health won't be changed.

@@ -26,4 +26,15 @@ public class UtilsTest {
     public void testJoinSeveralStrings() throws Exception {
         assertEquals("a,b", joinStrings(",", Lists.newArrayList("a", "b")));
     }
+
+    @Test
+    public void testHours2ticks() throws Exception {
+        assertEquals(1000, hours2ticks(1));
+        assertEquals(2000, hours2ticks(2));
+    }
+    @Test
+    public void testDays2ticks() throws Exception {
+        assertEquals(24000, days2ticks(1));
+        assertEquals(72000, days2ticks(3));
+    }
 }
