@@ -13,13 +13,6 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
-import static com.gmail.uprial.respawnlimiter.common.DoubleHelper.MIN_DOUBLE_VALUE;
-import static com.gmail.uprial.respawnlimiter.common.Formatter.format;
-import static com.gmail.uprial.respawnlimiter.common.MetadataHelper.getMetadata;
-import static com.gmail.uprial.respawnlimiter.common.MetadataHelper.setMetadata;
-import static com.gmail.uprial.respawnlimiter.common.Utils.seconds2ticks;
-import static org.bukkit.Statistic.*;
-
 public class RespawnLimiterEventListener implements Listener {
 
     private final RespawnLimiter plugin;
