@@ -15,7 +15,6 @@ A Minecraft (Bukkit) plugin that limits gameplay strategies based on easy player
 * The survival period and the number of mob kills can be configured.
 
 #### You can configure:
-
 * Whether to show messages about max life changes via the "verbose" flag in the configs.
 
 ## Commands
