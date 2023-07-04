@@ -2,7 +2,6 @@ package com.gmail.uprial.respawnlimiter;
 
 import com.gmail.uprial.respawnlimiter.common.CustomLogger;
 import com.gmail.uprial.respawnlimiter.config.InvalidConfigException;
-import com.gmail.uprial.respawnlimiter.limiter.PlayerLimiter;
 import com.gmail.uprial.respawnlimiter.listeners.RespawnLimiterEventListener;
 import com.gmail.uprial.respawnlimiter.trackers.PlayerTracker;
 import org.bukkit.configuration.file.FileConfiguration;

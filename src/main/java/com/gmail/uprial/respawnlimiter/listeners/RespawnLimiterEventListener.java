@@ -3,8 +3,6 @@ package com.gmail.uprial.respawnlimiter.listeners;
 import com.gmail.uprial.respawnlimiter.RespawnLimiter;
 import com.gmail.uprial.respawnlimiter.common.CustomLogger;
 import com.gmail.uprial.respawnlimiter.limiter.PlayerLimiter;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
