@@ -1,5 +1,7 @@
 ![RespawnLimiter Logo](images/respawnlimiter-logo.png)
 
+## Warning: I froze this plugin due to lack of popularity.
+
 ## Compatibility
 
 Tested on Spigot-1.19.
