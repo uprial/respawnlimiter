@@ -1,6 +1,6 @@
 ![RespawnLimiter Logo](images/respawnlimiter-logo.png)
 
-## Warning: I froze this plugin due to lack of popularity.
+## The plugin is in Maintenance mode: I have no dev plans, but I'm fixing critical bugs.
 
 ## Compatibility
 
